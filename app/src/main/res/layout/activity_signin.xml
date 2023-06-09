@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EAEDEA"
+    android:layout_margin="16dp"
     tools:context=".SignInActivity">
 
 
@@ -21,10 +21,12 @@
 
 
     <EditText
+        android:drawableLeft="@drawable/ic_e_phone"
+        android:background="@drawable/bg_blank_round"
         android:id="@+id/numberID"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginBottom="30dp"
         android:gravity="center"
         android:hint="Mobile  Number"
         android:inputType="numberDecimal"
@@ -35,11 +37,13 @@
         app:layout_constraintHorizontal_bias="0.45"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <EditText
+      <EditText
+        android:drawableLeft="@drawable/ic_key_35"
+        android:background="@drawable/bg_blank_round"
         android:inputType="textPassword"
         android:id="@+id/passID"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
         android:layout_marginBottom="252dp"
         android:gravity="center"
         android:hint="password"

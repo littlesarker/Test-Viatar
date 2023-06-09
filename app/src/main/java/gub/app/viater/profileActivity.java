@@ -27,10 +27,9 @@ public class profileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        id=findViewById(R.id.UserID);
+
         name=findViewById(R.id.UserName_ID);
         mobile=findViewById(R.id.phoneNumber);
-        verify=findViewById(R.id.verifyMeID);
 
 
 
@@ -41,11 +40,9 @@ public class profileActivity extends AppCompatActivity {
         String Vv=sharedPreferences.getString("vv", "");
 
 
-        id.setText("User ID : " +Uid);
+
         name.setText("Name : "+userName);
         mobile.setText("Mobile : " +U_mobile);
-        verify.setText("Verified : "+Vv);
-
 
 
 

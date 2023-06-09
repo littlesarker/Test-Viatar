@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -24,7 +26,17 @@ public class SettingsActivity extends AppCompatActivity {
 
 
         profileUpdate=findViewById(R.id.UpdateProfileID);
-        changePass=findViewById(R.id.changePassID);
+
+
+
+        Spinner dropdown = findViewById(R.id.spinner1);
+//create a list of items for the spinner.
+        String[] items = new String[]{"Ratings", "Experience", "Kilometer Ride"};
+//create an adapter to describe how the items are displayed, adapters are used in several places in android.
+//There are multiple variations of this, but this is the basic variant.
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
+//set the spinners adapter to the previously created one.
+        dropdown.setAdapter(adapter);
 
 
         profileUpdate.setOnClickListener(new View.OnClickListener() {
@@ -36,13 +48,7 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
 
-        changePass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent=new Intent(SettingsActivity.this,ResetPasswordActivity.class);
-                startActivity(intent);
-            }
-        });
+
 
 
         BottomNavigationView bottomNavigationView=findViewById(R.id.bottom_navigation3);

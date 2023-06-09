@@ -57,17 +57,18 @@
         android:layout_width="fill_parent"
         android:layout_height="60dp">
 
+
         <TextView
             android:clickable="true"
             android:layout_gravity="left"
             android:gravity="center"
             android:background="@drawable/bg_rounded"
-            android:id="@+id/dateID"
-            android:textSize="20sp"
+            android:id="@+id/date_TimeID"
+            android:textSize="16sp"
             android:drawableTop="@drawable/ic_calendar_24"
-            android:layout_width="200dp"
+            android:layout_width="250dp"
             android:layout_height="match_parent"
-            android:text="Date"
+            android:text="Date Time"
             >
 
         </TextView>
@@ -80,7 +81,7 @@
             android:gravity="center"
             android:drawableTop="@drawable/ic_price_change_24"
             android:textSize="20sp"
-            android:hint="Price"
+            android:hint="Asking"
             android:id="@+id/priceID"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
@@ -92,7 +93,7 @@
         android:id="@+id/info"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="115dp">
+        android:layout_height="110dp">
 
 
         <EditText
@@ -103,11 +104,12 @@
             android:textAlignment="center"
             android:singleLine="true"
             android:layout_width="match_parent"
-            android:layout_height="60dp">
+            android:layout_height="50dp">
 
         </EditText>
 
         <Button
+            android:layout_marginTop="6dp"
             android:id="@+id/requestBtnID"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -123,7 +125,6 @@
 
     </RelativeLayout>
 
-
     <fragment
         android:layout_below="@id/info"
         android:id="@+id/MY_MAP"
@@ -131,7 +132,6 @@
         android:layout_height="match_parent"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         />
-
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation1"

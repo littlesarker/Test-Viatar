@@ -9,11 +9,15 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.icu.text.SimpleDateFormat;
+import android.icu.util.TimeZone;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -24,6 +28,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -56,10 +61,13 @@ import java.io.InputStreamReader;
 import java.net.CookieStore;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import gub.app.viater.databinding.ActivityHomeBinding;
@@ -67,18 +75,21 @@ import gub.app.viater.databinding.ActivityHomeBinding;
 
 public class HomeActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    private int year, month, day;
-    private Calendar calendar;
+
     private GoogleMap mMap;
     private LatLng mOrigin;
     private LatLng mDestination;
     private Polyline mPolyline;
     ArrayList<LatLng> mMarkerPoints;
 
-   private Button requestBtn;
-   private EditText infoText, priceInput;
-   private TextView datePick,MyName;
-   ImageView notify, profile;
+    private Calendar calendar;
+    private Button requestBtn;
+    private EditText infoText, priceInput;
+    private TextView res, MyName;
+    ImageView notify, profile;
+
+    private int mYear, mMonth, mDay, mHour, mMinute;
+    private String date,time,ff;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,49 +97,43 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_home);
 
         //Finding Id for view
-        MyName=findViewById(R.id.UsernameID);
+        MyName = findViewById(R.id.UsernameID);
         profile = findViewById(R.id.profileID);
         notify = findViewById(R.id.notificationID);
         requestBtn = findViewById(R.id.requestBtnID);
         infoText = findViewById(R.id.additionalInfoID);
         priceInput = findViewById(R.id.priceID);
-        datePick = findViewById(R.id.dateID);
+        res = findViewById(R.id.date_TimeID);
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation1);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.MY_MAP);
 
         mapFragment.getMapAsync(this);
         mMarkerPoints = new ArrayList<>();
-
         calendar = Calendar.getInstance();
-        year = calendar.get(Calendar.YEAR);
-        month = calendar.get(Calendar.MONTH);
-        day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        showDate(year, month, day);
+
         db();
         GPS();
+
+        res.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                showDateTimePicker();
+
+            }
+        });
 
 
         requestBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if(!datePick.getText().toString().isEmpty() && !priceInput.getText().toString().isEmpty() && !infoText.getText().toString().isEmpty() ){
-
-                }else {
-                    Toast.makeText(getApplicationContext(),"Fields Are Empty",Toast.LENGTH_SHORT).show();
+                if (!res.getText().toString().isEmpty() && !priceInput.getText().toString().isEmpty() && !infoText.getText().toString().isEmpty()) {
+                    RideRequest();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Fields Are Empty", Toast.LENGTH_SHORT).show();
                 }
-
-            }
-        });
-
-        datePick.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-
-                setDate(view);
-                String dd = showDate(year, month + 1, day);
 
             }
         });
@@ -177,6 +182,53 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    private void showDateTimePicker() {
+        final Calendar c = Calendar.getInstance();
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
+
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+
+                         date=(year + "-" + (monthOfYear+1 ) + "-" + dayOfMonth)+"T";
+                         Timepicker();
+
+                    }
+                }, mYear, mMonth, mDay);
+        datePickerDialog.show();
+
+
+        // Get Current Time
+
+    }
+    private void Timepicker(){
+       final Calendar cc = Calendar.getInstance();
+        mHour = cc.get(Calendar.HOUR_OF_DAY);
+        mMinute = cc.get(Calendar.MINUTE);
+
+        // Launch Time Picker Dialog
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay,int minute) {
+
+                 time=(hourOfDay + ":" + minute+":"+"00.619Z");
+
+                 ff=date+time;
+
+                 res.setText(ff);
+
+            }
+        }, mHour, mMinute, false);
+        timePickerDialog.show();
+
+
+    }
+
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
@@ -218,7 +270,6 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (mMarkerPoints.size() >= 2) {
                     mOrigin = mMarkerPoints.get(0);
                     mDestination = mMarkerPoints.get(1);
-
 
                     drawRoute();
                 }
@@ -393,97 +444,69 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void RideRequest() {
 
-        String fromlat = String.valueOf(mOrigin.longitude);
-        String fromlng = String.valueOf(mOrigin.longitude);
-        String tolat = String.valueOf(mDestination.latitude);
-        String tolng = String.valueOf(mDestination.longitude);
+        String rfromlat = String.valueOf(mOrigin.latitude).toString();
+        String rfromlng = String.valueOf(mOrigin.longitude).toString();
+        String rtolat = String.valueOf(mDestination.latitude).toString();
+        String rtolng = String.valueOf(mDestination.longitude).toString();
 
-        String tDate=datePick.getText().toString();
-        String Ubudget=priceInput.getText().toString();
-        String addiInfo=infoText.getText().toString();
-
-
-
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "https://viater.vercel.app/api/order/create";
+        String tDate = res.getText().toString();
+        String Ubudget = priceInput.getText().toString();
+        String addiInfo = infoText.getText().toString();
 
 
-        StringRequest orderRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d("Response", response);
-                        Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
+        String urlRide = "https://viater.vercel.app/api/order/create";
 
+         JSONObject postData = new JSONObject();
+        try {
+            postData.put("from_lat", rfromlat);
+            postData.put("from_lng", rfromlng);
+            postData.put("to_lat", rtolat);
+            postData.put("to_lng", rtolng);
+            postData.put("budget", Ubudget);
+            postData.put("additional_requirements", addiInfo);
+            postData.put("departure_time", "2023-10-21T23:52:04.619Z");
 
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-
-                    }
-
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("ERROR", "error => " + error.toString());
-
-                        if (error.networkResponse != null) {
-                            int statusCode = error.networkResponse.statusCode;
-                            // Handle different status codes
-                            switch (statusCode) {
-                                case 200:
-                                    //The request was successful, and the server has returned the requested data
-                                    Toast.makeText(getApplicationContext(), "successful", Toast.LENGTH_LONG).show();
-                                    break;
-                                case 400:
-                                    // Bad Request
-                                    Toast.makeText(getApplicationContext(), "Bad Request", Toast.LENGTH_LONG).show();
-                                    break;
-                                case 401:
-                                    // Unauthorized
-                                    Toast.makeText(getApplicationContext(), "Unauthorized", Toast.LENGTH_LONG).show();
-                                    break;
-                                case 404:
-                                    // Not Found
-                                    Toast.makeText(getApplicationContext(), "not Found", Toast.LENGTH_LONG).show();
-                                    break;
-                                // Handle other status codes as needed
-                            }
-                        }
-
-                    }
-                }
-        ) {
-
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, urlRide, postData, new Response.Listener<JSONObject>() {
             @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("from_lat", fromlat);
-                params.put("from_lng", fromlng);
-                params.put("to_lat", tolat);
-                params.put("to_lng", tolng);
-                params.put("budget", Ubudget);
-                params.put("additional_requirements", addiInfo);
-                params.put("departure_time", tDate);
+            public void onResponse(JSONObject response) {
+                Toast.makeText(getApplicationContext(), "Response: "+response, Toast.LENGTH_LONG).show();
 
-                return params;
+                try {
+                    String reqID = response.getJSONObject("data").getString("id");
+
+
+
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
             }
-
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        } ){
             @Override
             public Map<String, String> getHeaders()  {
                 SharedPreferences sharedPreferences = getSharedPreferences("my_preferences", Context.MODE_PRIVATE);
                 String ck = sharedPreferences.getString("csk", "");
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("Content-Type", "application/json; charset=utf-8");
-                params.put("Cookie", ck);
-                return params;
+                Map<String, String> pp = new HashMap<String, String>();
+                pp.put("Cookie", ck);
+
+                return pp;
             }
         };
 
-        queue.add(orderRequest);
 
-
-
-
+        Volley.newRequestQueue(this).add(jsonObjectRequest);
 
 
         //Call API
@@ -552,8 +575,6 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                             editor.apply();
 
 
-
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -573,50 +594,12 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("Content-Type", "application/json; charset=utf-8");
                 params.put("Cookie", ck);
-                System.out.println(ck);
                 return params;
             }
         };
 
         requestQueue.add(stringRequest);
 
-    }
-
-    @SuppressWarnings("deprecation")
-    public void setDate(View view) {
-        showDialog(999);
-        Toast.makeText(getApplicationContext(), "ca", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        // TODO Auto-generated method stub
-        if (id == 999) {
-            return new DatePickerDialog(this, myDateListener, year, month, day);
-        }
-        return null;
-    }
-
-    private DatePickerDialog.OnDateSetListener myDateListener = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker arg0,
-                              int arg1, int arg2, int arg3) {
-            // TODO Auto-generated method stub
-            // arg1 = year
-            // arg2 = month
-            // arg3 = day
-            showDate(arg1, arg2 + 1, arg3);
-        }
-    };
-
-    public String showDate(int year, int month, int day) {
-
-        datePick.setText(new StringBuilder().append(day).append("/")
-                .append(month).append("/").append(year));
-
-        String date = day + " / " + month + " / " + year;
-
-        return date;
     }
 
 
