@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/homeActivityID"
+    tools:context=".HomeActivity">
+
+
+
+    <LinearLayout
+        android:gravity="center"
+        android:id="@+id/profileLayout"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+
+        <ImageView
+            android:src="@drawable/ic_baseline_person_24"
+            android:id="@+id/profileID"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:id="@+id/UsernameID"
+            android:layout_marginLeft="20dp"
+            android:layout_gravity="center"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:text="Name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <ImageView
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/notificationID"
+            android:layout_marginLeft="180dp"
+            android:src="@drawable/ic_notifications_none_24"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+        </ImageView>
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_margin="16dp"
+        android:layout_below="@id/profileLayout"
+        android:id="@+id/detailsID"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp">
+
+        <TextView
+            android:clickable="true"
+            android:layout_gravity="left"
+            android:gravity="center"
+            android:background="@drawable/bg_rounded"
+            android:id="@+id/dateID"
+            android:textSize="20sp"
+            android:drawableTop="@drawable/ic_calendar_24"
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:text="Date"
+            >
+
+        </TextView>
+        <EditText
+            android:inputType="numberDecimal"
+            android:textAlignment="center"
+            android:singleLine="true"
+            android:background="@drawable/bg_round2"
+            android:layout_gravity="right"
+            android:gravity="center"
+            android:drawableTop="@drawable/ic_price_change_24"
+            android:textSize="20sp"
+            android:hint="Price"
+            android:id="@+id/priceID"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:gravity="right"
+        android:layout_below="@id/detailsID"
+        android:id="@+id/info"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="115dp">
+
+
+        <EditText
+            android:id="@+id/additionalInfoID"
+            android:background="@drawable/bg_blank_round"
+            android:textSize="20sp"
+            android:hint="Additional Info"
+            android:textAlignment="center"
+            android:singleLine="true"
+            android:layout_width="match_parent"
+            android:layout_height="60dp">
+
+        </EditText>
+
+        <Button
+            android:id="@+id/requestBtnID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/additionalInfoID"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="27dp"
+            android:background="@drawable/bg_blank_round"
+            android:gravity="center_vertical"
+            android:text="Request">
+
+        </Button>
+
+
+    </RelativeLayout>
+
+
+    <fragment
+        android:layout_below="@id/info"
+        android:id="@+id/MY_MAP"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        />
+
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation1"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/bottom_menu" />
+
+
+</RelativeLayout>
