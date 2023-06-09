@@ -77,7 +77,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
    private Button requestBtn;
    private EditText infoText, priceInput;
-   private TextView datePick;
+   private TextView datePick,MyName;
    ImageView notify, profile;
 
     @Override
@@ -86,7 +86,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_home);
 
         //Finding Id for view
-
+        MyName=findViewById(R.id.UsernameID);
         profile = findViewById(R.id.profileID);
         notify = findViewById(R.id.notificationID);
         requestBtn = findViewById(R.id.requestBtnID);
@@ -497,6 +497,8 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         String id = sharedPreferences.getString("id", "");
         String userName = sharedPreferences.getString("UserName", "");
 
+        MyName.setText(userName);
+
         if (!id.isEmpty() && !userName.isEmpty()) {
             // The user has already logged in. Go to the home activity.
             Toast.makeText(getApplicationContext(), "Welcome", Toast.LENGTH_SHORT).show();
@@ -548,6 +550,8 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                             editor.putString("mobile", MOBILE);
                             editor.putString("vv", VERIFY);
                             editor.apply();
+
+
 
 
                         } catch (JSONException e) {
