@@ -19,10 +19,27 @@
         android:theme="@style/Theme.Viater"
         tools:targetApi="31">
         <activity
+            android:name=".ResetPasswordActivity"
+            android:exported="true"
+            android:parentActivityName=".SettingsActivity"
+            >
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".UpDateProfileActivity"
+            android:exported="true"
+            android:parentActivityName=".SettingsActivity"
+            >
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".profileActivity"
             android:exported="false"
-            android:parentActivityName=".HomeActivity"
-            >
+            android:parentActivityName=".HomeActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
